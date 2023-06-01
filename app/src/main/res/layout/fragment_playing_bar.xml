@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fafafb"
+    android:gravity="center">
+
+    <!-- 歌曲专辑图片（圆形） -->
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:src="@drawable/album_image" />
+
+    <!-- 歌曲标题和歌手名 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="阿牛"
+            android:textColor="#3d465a"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  -  陈奕迅"
+            android:textColor="#7c828f"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- 播放键 -->
+    <ImageButton
+        android:id="@+id/play_pause_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_play_btn"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/pause_button" />
+
+</LinearLayout>

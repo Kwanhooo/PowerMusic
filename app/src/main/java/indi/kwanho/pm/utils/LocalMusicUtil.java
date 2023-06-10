@@ -6,15 +6,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import indi.kwanho.pm.activity.LocalMusicActivity;
+import indi.kwanho.pm.activity.MainActivity;
 import indi.kwanho.pm.entity.Album;
 import indi.kwanho.pm.entity.Folder;
 import indi.kwanho.pm.entity.Singer;
 import indi.kwanho.pm.entity.Song;
+import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
 import indi.kwanho.pm.store.LocalMusicState;
 
 public class LocalMusicUtil {
@@ -106,6 +109,32 @@ public class LocalMusicUtil {
             }
         }
         LocalMusicState.getInstance().setDetails(songsBySinger);
+    }
+
+    public static void loadRecentToDetail(Context context){
+        PlayRecordRepository playRecordRepository = new PlayRecordRepository(context);
+        playRecordRepository.getRecentPlayRecords().observe((MainActivity) context, playRecords -> {
+            List<Song> songs = new ArrayList<>();
+            for (int i = 0; i < playRecords.size(); i++) {
+                Log.d("recent", playRecords.get(i).getTitle());
+                Song song = new Song(playRecords.get(i).getTitle(), playRecords.get(i).getAlbum(), playRecords.get(i).getArtist(), playRecords.get(i).getFilePath());
+                songs.add(song);
+            }
+            LocalMusicState.getInstance().setDetails(songs);
+        });
+    }
+
+    public static void loadFavoriteToDetail(Context context){
+        FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(context);
+        favoriteRecordRepository.getAllFavoriteRecords().observe((MainActivity) context, favoriteRecords -> {
+            List<Song> songs = new ArrayList<>();
+            for (int i = 0; i < favoriteRecords.size(); i++) {
+                Log.d("favorite", favoriteRecords.get(i).getTitle());
+                Song song = new Song(favoriteRecords.get(i).getTitle(), favoriteRecords.get(i).getAlbum(), favoriteRecords.get(i).getArtist(), favoriteRecords.get(i).getFilePath());
+                songs.add(song);
+            }
+            LocalMusicState.getInstance().setDetails(songs);
+        });
     }
 
 }

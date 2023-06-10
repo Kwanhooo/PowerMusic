@@ -1,6 +1,8 @@
 package indi.kwanho.pm.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.room.Room;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,13 +13,26 @@ import android.os.IBinder;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.fragment.general.PlayingBarFragment;
 import indi.kwanho.pm.manager.MusicPlayerManager;
+import indi.kwanho.pm.persisitance.AppDatabase;
+import indi.kwanho.pm.persisitance.dao.PlayRecordDao;
+import indi.kwanho.pm.persisitance.domain.FavoriteRecord;
+import indi.kwanho.pm.persisitance.domain.PlayRecord;
+import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
 import indi.kwanho.pm.service.MusicPlayerService;
+import indi.kwanho.pm.utils.LocalMusicUtil;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView localMusicEntranceButton;
+    private ImageView favoriteMusicEntranceButton;
+    private ImageView recentPlayEntranceButton;
     private FrameLayout frameLayout;
     private MusicPlayerService musicPlayerService;
     private boolean isServiceBound = false;
@@ -62,10 +77,19 @@ public class MainActivity extends AppCompatActivity {
         getActualViews();
         wiredWidgets();
         setUpListeners();
+//        testDb();
+    }
+
+    private void testDb() {
+        AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "pm")
+                .allowMainThreadQueries()
+                .build();
     }
 
     private void getActualViews() {
         localMusicEntranceButton = findViewById(R.id.local_music_entrance_button);
+        favoriteMusicEntranceButton = findViewById(R.id.favorite_music_entrance_button);
+        recentPlayEntranceButton = findViewById(R.id.recent_play_entrance_button);
         frameLayout = findViewById(R.id.fragment_container);
     }
 
@@ -83,6 +107,20 @@ public class MainActivity extends AppCompatActivity {
         localMusicEntranceButton.setOnClickListener(v -> {
             // 跳转到LocalMusicActivity
             Intent intent = new Intent(MainActivity.this, LocalMusicActivity.class);
+            startActivity(intent);
+        });
+        recentPlayEntranceButton.setOnClickListener(v -> {
+            // 跳转到RecentPlayActivity
+            LocalMusicUtil.loadRecentToDetail(this);
+            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
+            intent.putExtra("pageTitle", "最近播放");
+            startActivity(intent);
+        });
+        favoriteMusicEntranceButton.setOnClickListener(v -> {
+            // 跳转到FavoriteMusicActivity
+            LocalMusicUtil.loadFavoriteToDetail(this);
+            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
+            intent.putExtra("pageTitle", "我的收藏");
             startActivity(intent);
         });
         frameLayout.setOnClickListener(v -> {

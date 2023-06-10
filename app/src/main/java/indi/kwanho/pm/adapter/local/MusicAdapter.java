@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import indi.kwanho.pm.R;
+import indi.kwanho.pm.common.PlayingMode;
 import indi.kwanho.pm.entity.Song;
 import indi.kwanho.pm.manager.MusicPlayerManager;
 import indi.kwanho.pm.service.MusicPlayerService;
@@ -47,6 +48,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     Log.d("song", "song" + song.toString());
                     PlayState.getInstance().setPlayingSong(song);
                     PlayState.getInstance().setPlaying(true);
+                    PlayState.getInstance().setPlayingList(LocalMusicState.getInstance().getSongs());
+                    PlayState.getInstance().setPlayingIndex(position);
                     musicPlayerService.playSong(song.getFilePath());
                 }
             }

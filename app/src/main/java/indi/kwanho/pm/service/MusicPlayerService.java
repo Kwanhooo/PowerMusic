@@ -16,12 +16,15 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import java.io.IOException;
+import java.util.Date;
 
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.activity.MainActivity;
 import indi.kwanho.pm.common.PowerObserver;
+import indi.kwanho.pm.persisitance.domain.PlayRecord;
+import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
 import indi.kwanho.pm.store.PlayState;
+import indi.kwanho.pm.utils.PlayModeUtil;
 
 public class MusicPlayerService extends Service implements PowerObserver {
     private static final int NOTIFICATION_ID = 114514;
@@ -44,8 +47,23 @@ public class MusicPlayerService extends Service implements PowerObserver {
             public void onCompletion(MediaPlayer mp) {
                 // 音乐播放完成
                 Log.d("MusicPlayerService", "音乐播放完成");
+
+                // 记录到最近播放
+                PlayRecordRepository playRecordRepository = new PlayRecordRepository(getApplication());
+                PlayRecord playRecord = new PlayRecord(
+                        PlayState.getInstance().getPlayingSong().getTitle(),
+                        PlayState.getInstance().getPlayingSong().getAlbum(),
+                        PlayState.getInstance().getPlayingSong().getArtist(),
+                        PlayState.getInstance().getPlayingSong().getFilePath(),
+                        new Date()
+                );
+                playRecordRepository.insertPlayRecord(playRecord);
+
                 PlayState.getInstance().setPlaying(false);
                 PlayState.getInstance().setPlayingSong(null);
+
+                // 播放下一首
+                playSong(PlayModeUtil.next());
             }
         });
     }
@@ -156,6 +174,26 @@ public class MusicPlayerService extends Service implements PowerObserver {
     public void resumeSong() {
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
+        }
+    }
+
+    public void nextSong() {
+        if (mediaPlayer != null) {
+            PlayState.getInstance().setPlaying(false);
+            PlayState.getInstance().setPlayingSong(null);
+
+            // 播放下一首
+            playSong(PlayModeUtil.next());
+        }
+    }
+
+    public void prevSong() {
+        if (mediaPlayer != null) {
+            PlayState.getInstance().setPlaying(false);
+            PlayState.getInstance().setPlayingSong(null);
+
+            // 播放下一首
+            playSong(PlayModeUtil.prev());
         }
     }
 

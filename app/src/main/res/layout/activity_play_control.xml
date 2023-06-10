@@ -110,8 +110,8 @@
                 android:id="@+id/play_control_play_pause_button"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
                 android:background="@drawable/play_control_play_btn_corner"
                 android:padding="15dp"
                 android:scaleType="fitCenter"
@@ -148,7 +148,7 @@
             android:background="@drawable/rounded_corner"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/play_button" />
+            android:src="@drawable/list_loop_btn" />
 
         <Space
             android:layout_width="15dp"
@@ -162,7 +162,7 @@
             android:background="@drawable/rounded_corner"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/play_button" />
+            android:src="@drawable/favorite_btn" />
 
         <Space
             android:layout_width="20dp"
@@ -176,7 +176,7 @@
             android:background="@drawable/rounded_corner"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/play_button" />
+            android:src="@drawable/queue" />
 
         <Space
             android:layout_width="20dp"
@@ -190,7 +190,7 @@
             android:background="@drawable/rounded_corner"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/play_button" />
+            android:src="@drawable/more_btn" />
 
     </LinearLayout>
 

@@ -15,6 +15,7 @@ import indi.kwanho.pm.R;
 import indi.kwanho.pm.entity.Song;
 import indi.kwanho.pm.manager.MusicPlayerManager;
 import indi.kwanho.pm.service.MusicPlayerService;
+import indi.kwanho.pm.store.LocalMusicState;
 import indi.kwanho.pm.store.PlayState;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
@@ -46,6 +47,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                     Log.d("song", "song" + song.toString());
                     PlayState.getInstance().setPlayingSong(song);
                     PlayState.getInstance().setPlaying(true);
+                    PlayState.getInstance().setPlayingList(songs);
+                    PlayState.getInstance().setPlayingIndex(position);
                     musicPlayerService.playSong(song.getFilePath());
                 }
             }

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 上部 -->
+    <RelativeLayout
+        android:id="@+id/play_control_toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/play_control_back_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/play_control_default_corner"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/back" />
+
+    </RelativeLayout>
+
+    <!-- 中部 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/play_control_song_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/album_image" />
+
+        <TextView
+            android:id="@+id/play_control_song_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="26dp"
+            android:text="阿牛"
+            android:textColor="#000000"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/play_control_album_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="U87"
+            android:textColor="#B4808080"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/play_control_artist_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:text="陈奕迅"
+            android:textColor="#808080"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <!-- 下方的 SeekBar -->
+    <LinearLayout
+        android:id="@+id/play_control_seek_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        android:paddingBottom="30dp">
+
+        <SeekBar
+            android:id="@+id/play_control_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:max="100"
+            android:paddingBottom="40dp"
+            android:progress="20" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/play_control_prev_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/play_control_default_btn_bg"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/last" />
+
+            <ImageButton
+                android:id="@+id/play_control_play_pause_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/play_control_play_btn_corner"
+                android:padding="15dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/play_btn_white" />
+
+            <ImageButton
+                android:id="@+id/play_control_next_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/play_control_default_btn_bg"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/next" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 最下方的工具栏 -->
+    <LinearLayout
+        android:id="@+id/play_control_toolbar_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#F0F0F0"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/play_control_play_mode_button"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play_button" />
+
+        <Space
+            android:layout_width="15dp"
+            android:layout_height="1dp" />
+
+        <ImageButton
+            android:id="@+id/play_control_favorite_button"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play_button" />
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="1dp" />
+
+        <ImageButton
+            android:id="@+id/play_control_queue_button"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play_button" />
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="1dp" />
+
+        <ImageButton
+            android:id="@+id/play_control_more_button"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corner"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play_button" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

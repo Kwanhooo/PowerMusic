@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import indi.kwanho.pm.fragment.general.local.AlbumFragment;
-import indi.kwanho.pm.fragment.general.local.FolderFragment;
-import indi.kwanho.pm.fragment.general.local.SingerFragment;
-import indi.kwanho.pm.fragment.general.local.SingleFragment;
+import indi.kwanho.pm.fragment.local.AlbumFragment;
+import indi.kwanho.pm.fragment.local.FolderFragment;
+import indi.kwanho.pm.fragment.local.SingerFragment;
+import indi.kwanho.pm.fragment.local.SingleSongFragment;
 
 public class LocalTabAdapter extends FragmentPagerAdapter {
     public LocalTabAdapter(@NonNull FragmentManager fm) {
@@ -21,7 +21,7 @@ public class LocalTabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new SingleFragment();
+                return new SingleSongFragment();
             case 1:
                 return new AlbumFragment();
             case 2:

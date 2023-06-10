@@ -24,17 +24,19 @@
         android:paddingStart="16dp">
 
         <TextView
+            android:id="@+id/playing_bar_song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="阿牛"
+            android:text="暂无播放中歌曲"
             android:textColor="#3d465a"
             android:textSize="17sp"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/playing_bar_artist_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="  -  陈奕迅"
+            android:text=""
             android:textColor="#7c828f"
             android:textSize="14sp" />
 
@@ -49,6 +51,6 @@
         android:background="@drawable/rounded_play_btn"
         android:padding="12dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/pause_button" />
+        android:src="@drawable/play_button" />
 
 </LinearLayout>

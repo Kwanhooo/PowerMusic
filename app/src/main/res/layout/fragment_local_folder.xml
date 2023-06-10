@@ -5,11 +5,9 @@
     android:background="#fafafb"
     android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="FOLDER">
-
-    </TextView>
+    <ListView
+        android:id="@+id/fragment_local_folder_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

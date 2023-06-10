@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fafafb"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eff1f4"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="5dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
+
+        <!-- 菜单侧边栏按钮 -->
+        <ImageButton
+            android:id="@+id/detail_image_button_back_local_music"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:background="@android:color/transparent"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/back" />
+
+        <!-- 标题 -->
+        <TextView
+            android:id="@+id/detail_text_view_title_local_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="本地音乐"
+            android:textColor="#3d465a"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- 显示区域 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#eef0f3"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_local_detail_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container_detail_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

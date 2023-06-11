@@ -12,14 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.fragment.general.CreatePlaylistFragment;
 import indi.kwanho.pm.fragment.general.PlayingBarFragment;
 import indi.kwanho.pm.fragment.general.PlaylistFragment;
 import indi.kwanho.pm.manager.MusicPlayerManager;
-import indi.kwanho.pm.persisitance.AppDatabase;
+import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlaylistItemRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlaylistRecordRepository;
 import indi.kwanho.pm.service.MusicPlayerService;
 import indi.kwanho.pm.utils.LocalMusicUtil;
 
@@ -76,13 +78,19 @@ public class MainActivity extends AppCompatActivity {
         getActualViews();
         wiredWidgets();
         setUpListeners();
-//        testDb();
+        // deleteDbContent();
     }
 
-    private void testDb() {
-        AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "pm")
-                .allowMainThreadQueries()
-                .build();
+    private void deleteDbContent() {
+        // 清空所有数据库
+        FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
+        favoriteRecordRepository.deleteAll();
+        PlayRecordRepository playRecordRepository = new PlayRecordRepository(this);
+        playRecordRepository.deleteAll();
+        PlaylistRecordRepository playlistRecordRepository = new PlaylistRecordRepository(this);
+        playlistRecordRepository.deleteAll();
+        PlaylistItemRecordRepository playlistItemRecordRepository = new PlaylistItemRecordRepository(this);
+        playlistItemRecordRepository.deleteAll();
     }
 
     private void getActualViews() {

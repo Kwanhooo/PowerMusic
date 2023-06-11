@@ -27,4 +27,8 @@ public interface PlaylistRecordDao {
 
     @Query("SELECT * FROM playlist_record WHERE id = :id")
     LiveData<PlaylistRecord> getPlaylistRecordById(int id);
+
+    // 清空
+    @Query("DELETE FROM playlist_record")
+    void deleteAllPlaylistRecords();
 }

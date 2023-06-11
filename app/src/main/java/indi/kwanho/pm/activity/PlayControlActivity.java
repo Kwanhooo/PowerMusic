@@ -1,6 +1,8 @@
 package indi.kwanho.pm.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.common.PlayingMode;
@@ -25,9 +28,14 @@ import indi.kwanho.pm.entity.Singer;
 import indi.kwanho.pm.entity.Song;
 import indi.kwanho.pm.manager.MusicPlayerManager;
 import indi.kwanho.pm.persisitance.domain.FavoriteRecord;
+import indi.kwanho.pm.persisitance.domain.PlaylistItemRecord;
+import indi.kwanho.pm.persisitance.domain.PlaylistRecord;
 import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlaylistItemRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlaylistRecordRepository;
 import indi.kwanho.pm.store.LocalMusicState;
 import indi.kwanho.pm.store.PlayState;
+import indi.kwanho.pm.store.PlaylistState;
 import indi.kwanho.pm.utils.LocalMusicUtil;
 
 public class PlayControlActivity extends AppCompatActivity implements PowerObserver, SeekBar.OnSeekBarChangeListener {
@@ -161,8 +169,31 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
                         int itemId = item.getItemId();
 
                         if (itemId == R.id.add_to_playlist) {
-                            // 执行添加到歌单的逻辑
-                            Log.d("PlayingBarFragment", "onMenuItemClick: add to playlist");
+                            // 弹出一个dialog，让用户选择要添加到的歌单，并添加到歌单中
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(PlayControlActivity.this);
+                            builder.setTitle("选择歌单");
+
+                            // 获取现有的歌单列表
+                            List<PlaylistRecord> playlists = PlaylistState.getInstance().getPlaylistRecords();
+                            String[] playlistNames = new String[playlists.size()];
+                            for (int i = 0; i < playlists.size(); i++) {
+                                playlistNames[i] = playlists.get(i).getTitle();
+                            }
+                            builder.setItems(playlistNames, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // 获取选中的歌单
+                                    PlaylistRecord selectedPlaylist = playlists.get(which);
+
+                                    // 执行添加到歌单的逻辑
+                                    // TODO: 添加到选中的歌单中
+                                    handleAddToPlaylist(PlayState.getInstance().getPlayingSong(), selectedPlaylist);
+                                }
+                            });
+
+                            builder.create().show();
+
                         } else if (itemId == R.id.view_album) {
                             // 执行查看专辑的逻辑
                             Song playingSong = PlayState.getInstance().getPlayingSong();
@@ -200,35 +231,86 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
         });
         // 收藏按钮
         favoriteButton.setOnClickListener(v -> {
-            Log.d("这里呢", "onClick: favorite");
             Song playingSong = PlayState.getInstance().getPlayingSong();
             if (playingSong == null)
                 return;
-            FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
-//            LiveData<List<FavoriteRecord>> allFavoriteRecords = favoriteRecordRepository.getAllFavoriteRecords();
-//            AtomicBoolean hasFavorite = new AtomicBoolean(false);
-//            allFavoriteRecords.observe(this, favoriteRecords -> {
-//                for (FavoriteRecord favoriteRecord : favoriteRecords) {
-//                    if (favoriteRecord.getFilePath().equals(playingSong.getFilePath())) {
-//                        hasFavorite.set(true);
-//                        return;
-//                    }
-//                }
-//            });
-//            if (hasFavorite.get()) {
-//                return;
-//            }
-            Log.d("添加收藏", "onClick: " + playingSong.getTitle());
-            FavoriteRecord favoriteRecord = new FavoriteRecord(
-                    playingSong.getTitle(),
-                    playingSong.getArtist(),
-                    playingSong.getAlbum(),
-                    playingSong.getFilePath()
-            );
-            favoriteRecordRepository.insertPlayRecord(favoriteRecord);
-            Toast.makeText(this, "已添加到收藏", Toast.LENGTH_LONG).show();
+            handleAddToFavorite(playingSong);
         });
     }
+
+    private void handleAddToFavorite(Song playingSong) {
+        FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
+
+        AtomicBoolean isExist = new AtomicBoolean(false);
+        favoriteRecordRepository.getFavoriteRecordsByFilePath(playingSong.getFilePath()).observe(this, favoriteRecords -> {
+            for (FavoriteRecord favoriteRecord : favoriteRecords) {
+                // 如果已经存在于收藏列表中，则不再添加
+                if (favoriteRecord.getFilePath().equals(playingSong.getFilePath())) {
+                    isExist.set(true);
+                }
+            }
+
+            // 如果不存在于收藏列表中，则执行添加操作
+            if (!isExist.get()) {
+                // 在FavoriteRecordRepository中添加一条记录
+                FavoriteRecord favoriteRecord = new FavoriteRecord(
+                        playingSong.getTitle(),
+                        playingSong.getArtist(),
+                        playingSong.getAlbum(),
+                        playingSong.getFilePath()
+                );
+                favoriteRecordRepository.insertFavoriteRecord(favoriteRecord);
+
+                Toast.makeText(PlayControlActivity.this, "已添加到收藏列表", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(PlayControlActivity.this, "歌曲已存在于收藏列表中", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void handleAddToPlaylist(Song playingSong, PlaylistRecord selectedPlaylist) {
+        PlaylistItemRecordRepository playlistItemRepository = new PlaylistItemRecordRepository(this);
+
+        AtomicBoolean isExist = new AtomicBoolean(false);
+        playlistItemRepository.getPlaylistItemRecordsByFilePath(playingSong.getFilePath()).observe(this, playlistItemRecords -> {
+            for (PlaylistItemRecord playlistItemRecord : playlistItemRecords) {
+                Log.d("playlistItemRecord", "handleAddToPlaylist: " + playlistItemRecord.getPlaylistId() + " " + selectedPlaylist.getId());
+                // 如果已经存在于歌单中，则不再添加
+                if (playlistItemRecord.getPlaylistId() == selectedPlaylist.getId()) {
+                    isExist.set(true);
+                }
+            }
+
+            // 如果不存在于歌单中，则执行添加操作
+            if (!isExist.get()) {
+                // 在PlaylistItemRepository中添加一条记录，与selectedPlaylist的id关联
+                PlaylistItemRecord itemRecord = new PlaylistItemRecord(
+                        playingSong.getTitle(),
+                        playingSong.getArtist(),
+                        playingSong.getAlbum(),
+                        playingSong.getFilePath(),
+                        selectedPlaylist.getId()
+                );
+                playlistItemRepository.insertPlaylistItemRecord(itemRecord);
+
+                selectedPlaylist.setCount(selectedPlaylist.getCount() + 1);
+                // 在PlaylistRecordRepository中更新selectedPlaylist的count
+                PlaylistRecordRepository playlistRecordRepository = new PlaylistRecordRepository(this);
+                playlistRecordRepository.updatePlayRecord(selectedPlaylist);
+
+                // 从数据库重新读取一次歌单列表
+                playlistRecordRepository.getAllPlaylistRecords().observe(this, playlistRecords -> {
+                    PlaylistState.getInstance().setPlaylistRecords(playlistRecords);
+                });
+
+                Toast.makeText(PlayControlActivity.this, "已添加到歌单：" + selectedPlaylist.getTitle(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(PlayControlActivity.this, "歌曲已存在于歌单：" + selectedPlaylist.getTitle(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     @Override
     public void register() {

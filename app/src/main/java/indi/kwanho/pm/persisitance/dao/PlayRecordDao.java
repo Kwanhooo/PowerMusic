@@ -27,4 +27,8 @@ public interface PlayRecordDao {
 
     @Query("SELECT * FROM play_records WHERE id = :id")
     LiveData<PlayRecord> getPlayRecordById(int id);
+
+    // 清空
+    @Query("DELETE FROM play_records")
+    void deleteAllPlayRecords();
 }

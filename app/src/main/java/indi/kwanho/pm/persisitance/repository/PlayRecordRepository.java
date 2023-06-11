@@ -42,4 +42,9 @@ public class PlayRecordRepository {
         // 返回最近播放列表的 LiveData，在观察者中处理返回的数据
         return playRecordDao.getRecentPlayRecords();
     }
+
+    // 清空
+    public void deleteAll() {
+        new Thread(playRecordDao::deleteAllPlayRecords).start();
+    }
 }

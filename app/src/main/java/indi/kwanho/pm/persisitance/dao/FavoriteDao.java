@@ -27,4 +27,11 @@ public interface FavoriteDao {
 
     @Query("SELECT * FROM favorite_record WHERE id = :id")
     LiveData<FavoriteRecord> getFavoriteRecordById(int id);
+
+    @Query("SELECT * FROM favorite_record WHERE filePath = :filePath")
+    LiveData<List<FavoriteRecord>> getFavoriteRecordsByFilePath(String filePath);
+
+    // 清空
+    @Query("DELETE FROM favorite_record")
+    void deleteAllFavoriteRecords();
 }

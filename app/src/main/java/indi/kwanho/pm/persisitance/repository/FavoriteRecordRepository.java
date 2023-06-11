@@ -22,7 +22,7 @@ public class FavoriteRecordRepository {
         favoriteDao = database.favoriteDao();
     }
 
-    public void insertPlayRecord(FavoriteRecord favoriteRecord) {
+    public void insertFavoriteRecord(FavoriteRecord favoriteRecord) {
         // 在后台线程中执行插入操作
         new Thread(() -> favoriteDao.insert(favoriteRecord)).start();
     }
@@ -45,6 +45,15 @@ public class FavoriteRecordRepository {
     public LiveData<FavoriteRecord> getFavoriteRecordById(int id) {
         // 返回最近播放列表的 LiveData，在观察者中处理返回的数据
         return favoriteDao.getFavoriteRecordById(id);
+    }
+
+    // 清空
+    public void deleteAll() {
+        new Thread(favoriteDao::deleteAllFavoriteRecords).start();
+    }
+
+    public LiveData<List<FavoriteRecord>> getFavoriteRecordsByFilePath(String filePath) {
+        return favoriteDao.getFavoriteRecordsByFilePath(filePath);
     }
 }
 

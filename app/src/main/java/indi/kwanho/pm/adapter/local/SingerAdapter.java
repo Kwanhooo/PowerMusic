@@ -36,6 +36,7 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Singer singer = singers.get(position);
         holder.singerNameTextView.setText(singer.getName());
+        holder.orderTextView.setText(String.valueOf(position + 1));
         // 其他绑定数据到视图的操作
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,11 +61,13 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView singerNameTextView;
+        TextView orderTextView;
         // 其他视图组件
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             singerNameTextView = itemView.findViewById(R.id.singerNameTextView);
+            orderTextView = itemView.findViewById(R.id.item_singer_order);
             // 初始化其他视图组件
         }
     }

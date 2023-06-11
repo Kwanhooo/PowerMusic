@@ -15,7 +15,6 @@ import java.util.List;
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.activity.LocalDetailActivity;
 import indi.kwanho.pm.entity.Album;
-import indi.kwanho.pm.entity.Song;
 import indi.kwanho.pm.store.LocalMusicState;
 import indi.kwanho.pm.utils.LocalMusicUtil;
 
@@ -38,6 +37,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         Album album = albums.get(position);
         holder.albumNameTextView.setText(album.getName());
         holder.albumArtistTextView.setText(album.getArtist());
+        holder.orderTextView.setText(String.valueOf(position + 1));
         // 其他绑定数据到视图的操作
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,12 +62,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView albumNameTextView;
         TextView albumArtistTextView;
+        TextView orderTextView;
         // 其他视图组件
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             albumNameTextView = itemView.findViewById(R.id.albumNameTextView);
             albumArtistTextView = itemView.findViewById(R.id.album_artistTextView);
+            orderTextView = itemView.findViewById(R.id.item_album_order);
             // 初始化其他视图组件
         }
     }

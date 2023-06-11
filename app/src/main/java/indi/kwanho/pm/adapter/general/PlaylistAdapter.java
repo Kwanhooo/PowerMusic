@@ -3,6 +3,7 @@ package indi.kwanho.pm.adapter.general;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,8 @@ import java.util.List;
 
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.persisitance.domain.PlaylistRecord;
+import indi.kwanho.pm.store.PlaylistState;
+import indi.kwanho.pm.utils.LocalMusicUtil;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
     private List<PlaylistRecord> playlistItems;
@@ -31,6 +34,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
         PlaylistRecord playlistItem = playlistItems.get(position);
         holder.bind(playlistItem);
+        holder.itemView.setOnClickListener(v -> {
+            // 跳入歌单详情页
+            LocalMusicUtil.gotoPlaylistDetail(v.getContext(), PlaylistState.getInstance().getPlaylistRecords().get(position));
+        });
     }
 
     @Override
@@ -49,6 +56,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
 
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
+            LinearLayout playlistItem = itemView.findViewById(R.id.play_list_item);
             titleTextView = itemView.findViewById(R.id.play_list_item_title);
             countTextView = itemView.findViewById(R.id.play_list_item_count);
         }

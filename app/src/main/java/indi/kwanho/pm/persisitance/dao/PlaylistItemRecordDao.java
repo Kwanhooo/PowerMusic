@@ -27,4 +27,15 @@ public interface PlaylistItemRecordDao {
 
     @Query("SELECT * FROM playlist_item_record WHERE id = :id")
     LiveData<PlaylistItemRecord> getPlaylistItemRecordById(int id);
+
+    @Query("SELECT * FROM playlist_item_record WHERE filePath = :filePath")
+    LiveData<List<PlaylistItemRecord>> getPlaylistItemRecordByFilePath(String filePath);
+
+    // 根据播放列表id获取
+    @Query("SELECT * FROM playlist_item_record WHERE playlistId = :playlistId")
+    LiveData<List<PlaylistItemRecord>> getPlaylistItemRecordByPlaylistId(int playlistId);
+
+    // 清空所有条目
+    @Query("DELETE FROM playlist_item_record")
+    void deleteAllPlaylistItemRecords();
 }

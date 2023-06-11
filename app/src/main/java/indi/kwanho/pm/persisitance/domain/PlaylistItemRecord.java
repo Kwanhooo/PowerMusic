@@ -12,11 +12,11 @@ import indi.kwanho.pm.entity.Song;
 public class PlaylistItemRecord extends Song {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     private int playlistId;
 
-    public PlaylistItemRecord(String title, String album, String artist, String filePath) {
+    public PlaylistItemRecord(String title, String album, String artist, String filePath, int playlistId) {
         super(title, album, artist, filePath);
+        this.playlistId = playlistId;
     }
 
     public int getId() {

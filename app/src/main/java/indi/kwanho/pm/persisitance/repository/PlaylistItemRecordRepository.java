@@ -22,7 +22,7 @@ public class PlaylistItemRecordRepository {
         playlistItemRecordDao = database.playlistItemRecordDao();
     }
 
-    public void insertPlayRecord(PlaylistItemRecord playlistItemRecord) {
+    public void insertPlaylistItemRecord(PlaylistItemRecord playlistItemRecord) {
         // 在后台线程中执行插入操作
         new Thread(() -> playlistItemRecordDao.insert(playlistItemRecord)).start();
     }
@@ -45,6 +45,22 @@ public class PlaylistItemRecordRepository {
     public LiveData<PlaylistItemRecord> getPlaylistItemRecordById(int id) {
         // 返回最近播放列表的 LiveData，在观察者中处理返回的数据
         return playlistItemRecordDao.getPlaylistItemRecordById(id);
+    }
+
+    public LiveData<List<PlaylistItemRecord>> getPlaylistItemRecordsByFilePath(String filePath) {
+        // 返回最近播放列表的 LiveData，在观察者中处理返回的数据
+        return playlistItemRecordDao.getPlaylistItemRecordByFilePath(filePath);
+    }
+
+    // 清空
+    public void deleteAll() {
+        new Thread(playlistItemRecordDao::deleteAllPlaylistItemRecords).start();
+    }
+
+    // 根据播放列表id获取
+    public LiveData<List<PlaylistItemRecord>> getPlaylistItemRecordByPlaylistId(int playlistId) {
+        // 返回最近播放列表的 LiveData，在观察者中处理返回的数据
+        return playlistItemRecordDao.getPlaylistItemRecordByPlaylistId(playlistId);
     }
 }
 

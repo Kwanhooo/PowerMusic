@@ -19,8 +19,10 @@ import indi.kwanho.pm.entity.Folder;
 import indi.kwanho.pm.entity.Singer;
 import indi.kwanho.pm.entity.Song;
 import indi.kwanho.pm.manager.MusicPlayerManager;
+import indi.kwanho.pm.persisitance.domain.PlaylistRecord;
 import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
 import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
+import indi.kwanho.pm.persisitance.repository.PlaylistItemRecordRepository;
 import indi.kwanho.pm.service.MusicPlayerService;
 import indi.kwanho.pm.store.LocalMusicState;
 import indi.kwanho.pm.store.PlayState;
@@ -146,6 +148,24 @@ public class LocalMusicUtil {
             intent.putExtra("pageTitle", "我的收藏");
             context.startActivity(intent);
         });
+    }
+
+    public static void gotoPlaylistDetail(Context context, PlaylistRecord playlistRecord) {
+        int playlistRecordId = playlistRecord.getId();
+        PlaylistItemRecordRepository playlistItemRecordRepository = new PlaylistItemRecordRepository(context);
+        playlistItemRecordRepository.getPlaylistItemRecordByPlaylistId(playlistRecordId).observe((MainActivity) context, playlistItemRecords -> {
+            List<Song> songs = new ArrayList<>();
+            for (int i = 0; i < playlistItemRecords.size(); i++) {
+                Log.d("playlist", playlistItemRecords.get(i).getTitle());
+                Song song = new Song(playlistItemRecords.get(i).getTitle(), playlistItemRecords.get(i).getAlbum(), playlistItemRecords.get(i).getArtist(), playlistItemRecords.get(i).getFilePath());
+                songs.add(song);
+            }
+            LocalMusicState.getInstance().setDetails(songs);
+            Intent intent = new Intent(context, LocalDetailActivity.class);
+            intent.putExtra("pageTitle", playlistRecord.getTitle());
+            context.startActivity(intent);
+        });
+
     }
 
     public static void loadAndPlayFavorite(Context context) {

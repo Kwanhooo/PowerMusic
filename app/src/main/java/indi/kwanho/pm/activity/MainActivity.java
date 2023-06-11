@@ -1,13 +1,19 @@
 package indi.kwanho.pm.activity;
 
+import static indi.kwanho.pm.common.Constants.REQUEST_CODE_STORAGE_PERMISSION;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.FrameLayout;

@@ -27,6 +27,17 @@
         <activity android:name=".activity.PlayControlActivity" />
 
         <service android:name=".service.MusicPlayerService" />
+        <receiver
+            android:name=".broadcast.NotificationButtonReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="NotificationPreviousButtonClicked" />
+                <action android:name="NotificationPlayPauseButtonClicked" />
+                <action android:name="NotificationNextButtonClicked" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />

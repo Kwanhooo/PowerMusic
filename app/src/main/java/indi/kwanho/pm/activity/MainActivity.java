@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView favoriteMusicEntranceButton;
     private ImageView recentPlayEntranceButton;
     private ImageView playControlEntranceButton;
+    private ImageView playlistAssistantEntranceButton;
     private LinearLayout favoriteMusicComponent;
     private Button listenNowButton;
     private FrameLayout frameLayout;
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         playControlEntranceButton = findViewById(R.id.play_control_entrance_button);
         favoriteMusicComponent = findViewById(R.id.favorite_music_component);
         listenNowButton = findViewById(R.id.listen_now_button);
+        playlistAssistantEntranceButton = findViewById(R.id.play_list_assistant_entrance_button);
         frameLayout = findViewById(R.id.fragment_container);
         createPlaylistFragmentContainer = findViewById(R.id.create_play_list_fragment_container);
     }
@@ -148,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
         listenNowButton.setOnClickListener(v -> {
             // 跳转到PlayControlActivity
             LocalMusicUtil.loadAndPlayFavorite(this);
+            Toast.makeText(this, "开始播放您喜欢的音乐", Toast.LENGTH_SHORT).show();
+        });
+        playlistAssistantEntranceButton.setOnClickListener(v -> {
+            // 跳转到PlaylistAssistantActivity
+            Intent intent = new Intent(MainActivity.this, PlaylistAssistantActivity.class);
+            startActivity(intent);
         });
     }
 

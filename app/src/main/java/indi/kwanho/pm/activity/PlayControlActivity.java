@@ -10,13 +10,12 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.lifecycle.LiveData;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.common.PlayingMode;
@@ -133,14 +132,17 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
                 case PlayingMode.LIST:
                     PlayState.getInstance().setPlayingMode(PlayingMode.RANDOM);
                     playControlModeButton.setImageResource(R.drawable.random_btn);
+                    Toast.makeText(this, "切换至随机播放", Toast.LENGTH_SHORT).show();
                     break;
                 case PlayingMode.RANDOM:
                     PlayState.getInstance().setPlayingMode(PlayingMode.SINGLE);
                     playControlModeButton.setImageResource(R.drawable.single_btn);
+                    Toast.makeText(this, "切换至单曲循环", Toast.LENGTH_SHORT).show();
                     break;
                 case PlayingMode.SINGLE:
                     PlayState.getInstance().setPlayingMode(PlayingMode.LIST);
                     playControlModeButton.setImageResource(R.drawable.list_loop_btn);
+                    Toast.makeText(this, "切换至列表循环", Toast.LENGTH_SHORT).show();
                     break;
             }
         });
@@ -224,6 +226,7 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
                     playingSong.getFilePath()
             );
             favoriteRecordRepository.insertPlayRecord(favoriteRecord);
+            Toast.makeText(this, "已添加到收藏", Toast.LENGTH_LONG).show();
         });
     }
 

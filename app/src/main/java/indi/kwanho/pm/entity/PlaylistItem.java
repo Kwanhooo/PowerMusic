@@ -2,6 +2,7 @@ package indi.kwanho.pm.entity;
 
 import java.util.Objects;
 
+@Deprecated
 public class PlaylistItem {
     private String title;
     private String count;

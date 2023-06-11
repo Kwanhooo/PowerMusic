@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import indi.kwanho.pm.R;
-import indi.kwanho.pm.entity.PlaylistItem;
+import indi.kwanho.pm.persisitance.domain.PlaylistRecord;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
-    private List<PlaylistItem> playlistItems;
+    private List<PlaylistRecord> playlistItems;
 
-    public PlaylistAdapter(List<PlaylistItem> playlistItems) {
+    public PlaylistAdapter(List<PlaylistRecord> playlistItems) {
         this.playlistItems = playlistItems;
     }
 
@@ -29,13 +29,18 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
 
     @Override
     public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
-        PlaylistItem playlistItem = playlistItems.get(position);
+        PlaylistRecord playlistItem = playlistItems.get(position);
         holder.bind(playlistItem);
     }
 
     @Override
     public int getItemCount() {
         return playlistItems.size();
+    }
+
+    public void updateData(List<PlaylistRecord> records) {
+        this.playlistItems = records;
+        notifyDataSetChanged();
     }
 
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
@@ -48,9 +53,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
             countTextView = itemView.findViewById(R.id.play_list_item_count);
         }
 
-        public void bind(PlaylistItem playlistItem) {
+        public void bind(PlaylistRecord playlistItem) {
             titleTextView.setText(playlistItem.getTitle());
-            countTextView.setText(playlistItem.getCount());
+            countTextView.setText("共  " + playlistItem.getCount() + "  首");
             itemView.setOnClickListener(v -> {
                 // 跳入歌单详情页
             });

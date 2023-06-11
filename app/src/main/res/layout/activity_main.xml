@@ -227,6 +227,7 @@
                                 android:orientation="vertical">
 
                                 <ImageView
+                                    android:id="@+id/play_list_assistant_entrance_button"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:src="@drawable/play_list_icon" />
@@ -370,7 +371,7 @@
                                 android:id="@+id/play_list_fragment_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:minHeight="560dp"></FrameLayout>
+                                android:minHeight="700dp"></FrameLayout>
 
                             <TextView
                                 android:layout_width="match_parent"

@@ -25,6 +25,7 @@
         <activity android:name=".activity.LocalMusicActivity" />
         <activity android:name=".activity.LocalDetailActivity" />
         <activity android:name=".activity.PlayControlActivity" />
+        <activity android:name=".activity.PlaylistAssistantActivity" />
 
         <service android:name=".service.MusicPlayerService" />
         <receiver

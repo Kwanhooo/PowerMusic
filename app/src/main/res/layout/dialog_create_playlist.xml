@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:background="@drawable/favorite_component_background"
+        android:padding="14dp"
+
+        android:src="@drawable/create_play_list_icon" />
+
+    <EditText
+        android:id="@+id/playlistNameEditText"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:hint="请输入歌单名称" />
+
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="确定"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

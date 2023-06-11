@@ -113,7 +113,7 @@
                                 android:layout_width="80dp"
                                 android:layout_height="80dp"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/album_image" />
+                                android:src="@drawable/avatar" />
 
                         </LinearLayout>
 
@@ -151,7 +151,7 @@
                                     android:id="@+id/recent_play_entrance_button"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
-                                    android:src="@drawable/album_image" />
+                                    android:src="@drawable/recent_play_icon" />
 
                                 <TextView
                                     android:layout_width="50dp"
@@ -173,7 +173,7 @@
                                     android:id="@+id/local_music_entrance_button"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
-                                    android:src="@drawable/album_image" />
+                                    android:src="@drawable/local_music_icon" />
 
                                 <TextView
                                     android:layout_width="50dp"
@@ -195,7 +195,7 @@
                                     android:id="@+id/favorite_music_entrance_button"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
-                                    android:src="@drawable/album_image" />
+                                    android:src="@drawable/favorite_icon" />
 
                                 <TextView
                                     android:layout_width="50dp"
@@ -229,7 +229,7 @@
                                 <ImageView
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
-                                    android:src="@drawable/album_image" />
+                                    android:src="@drawable/play_list_icon" />
 
                                 <TextView
                                     android:layout_width="50dp"
@@ -248,15 +248,16 @@
                                 android:orientation="vertical">
 
                                 <ImageView
+                                    android:id="@+id/play_control_entrance_button"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
-                                    android:src="@drawable/album_image" />
+                                    android:src="@drawable/play_control_icon" />
 
                                 <TextView
                                     android:layout_width="50dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:text="用户中心"
+                                    android:text="播放中"
                                     android:textAlignment="center"
                                     android:textColor="#7e8491"
                                     android:textSize="12sp" />
@@ -271,7 +272,7 @@
                                 <ImageView
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
-                                    android:src="@drawable/album_image" />
+                                    android:src="@drawable/search_icon" />
 
                                 <TextView
                                     android:layout_width="50dp"
@@ -293,15 +294,92 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/rounded_corner"
                         android:padding="10dp"
                         tools:ignore="MissingConstraints">
 
-                        <androidx.constraintlayout.widget.Placeholder
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="800dp">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                        </androidx.constraintlayout.widget.Placeholder>
+                            <LinearLayout
+                                android:id="@+id/favorite_music_component"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/favorite_component_background"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <!-- 左侧图片 -->
+                                <ImageView
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:layout_marginRight="15dp"
+                                    android:src="@drawable/album_image" />
+
+                                <!-- 中间部分 -->
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="3"
+                                        android:gravity="center_vertical"
+                                        android:text="我喜爱的音乐"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="2"
+                                        android:gravity="center_vertical"
+                                        android:text="共 107 首"
+                                        android:textColor="#7e8491"
+                                        android:textSize="14sp" />
+
+                                </LinearLayout>
+
+                                <!-- 右侧按钮 -->
+                                <Button
+                                    android:id="@+id/listen_now_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="43dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:paddingLeft="13dp"
+                                    android:paddingRight="15dp"
+                                    android:text="❤ 现在就听"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <FrameLayout
+                                android:id="@+id/create_play_list_fragment_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"></FrameLayout>
+
+                            <FrameLayout
+                                android:id="@+id/play_list_fragment_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="560dp"></FrameLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="已经到底了捏   🐕"
+                                android:textColor="#7e8491" />
+
+                        </LinearLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

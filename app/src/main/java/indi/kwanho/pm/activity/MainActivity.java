@@ -1,37 +1,24 @@
 package indi.kwanho.pm.activity;
 
-import static indi.kwanho.pm.common.Constants.REQUEST_CODE_STORAGE_PERMISSION;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LiveData;
-import androidx.room.Room;
-
-import android.Manifest;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import indi.kwanho.pm.R;
+import indi.kwanho.pm.fragment.general.CreatePlaylistFragment;
 import indi.kwanho.pm.fragment.general.PlayingBarFragment;
+import indi.kwanho.pm.fragment.general.PlaylistFragment;
 import indi.kwanho.pm.manager.MusicPlayerManager;
 import indi.kwanho.pm.persisitance.AppDatabase;
-import indi.kwanho.pm.persisitance.dao.PlayRecordDao;
-import indi.kwanho.pm.persisitance.domain.FavoriteRecord;
-import indi.kwanho.pm.persisitance.domain.PlayRecord;
-import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
-import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
 import indi.kwanho.pm.service.MusicPlayerService;
 import indi.kwanho.pm.utils.LocalMusicUtil;
 
@@ -39,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
     private ImageView localMusicEntranceButton;
     private ImageView favoriteMusicEntranceButton;
     private ImageView recentPlayEntranceButton;
+    private ImageView playControlEntranceButton;
+    private LinearLayout favoriteMusicComponent;
+    private Button listenNowButton;
     private FrameLayout frameLayout;
+    private FrameLayout createPlaylistFragmentContainer;
     private MusicPlayerService musicPlayerService;
     private boolean isServiceBound = false;
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -96,16 +87,24 @@ public class MainActivity extends AppCompatActivity {
         localMusicEntranceButton = findViewById(R.id.local_music_entrance_button);
         favoriteMusicEntranceButton = findViewById(R.id.favorite_music_entrance_button);
         recentPlayEntranceButton = findViewById(R.id.recent_play_entrance_button);
+        playControlEntranceButton = findViewById(R.id.play_control_entrance_button);
+        favoriteMusicComponent = findViewById(R.id.favorite_music_component);
+        listenNowButton = findViewById(R.id.listen_now_button);
         frameLayout = findViewById(R.id.fragment_container);
+        createPlaylistFragmentContainer = findViewById(R.id.create_play_list_fragment_container);
     }
 
     private void wiredWidgets() {
         // 创建PlayingBarFragment的实例
         PlayingBarFragment playingBarFragment = new PlayingBarFragment();
+        CreatePlaylistFragment createPlaylistFragment = new CreatePlaylistFragment();
+        PlaylistFragment playlistFragment = new PlaylistFragment();
 
         // 将PlayingBarFragment添加到Fragment容器
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, playingBarFragment)
+                .add(R.id.create_play_list_fragment_container, createPlaylistFragment)
+                .add(R.id.play_list_fragment_container, playlistFragment)
                 .commit();
     }
 
@@ -117,22 +116,38 @@ public class MainActivity extends AppCompatActivity {
         });
         recentPlayEntranceButton.setOnClickListener(v -> {
             // 跳转到RecentPlayActivity
-            LocalMusicUtil.loadRecentToDetail(this);
-            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
-            intent.putExtra("pageTitle", "最近播放");
-            startActivity(intent);
+            LocalMusicUtil.gotoRecent(this);
+//            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
+//            intent.putExtra("pageTitle", "最近播放");
+//            startActivity(intent);
         });
         favoriteMusicEntranceButton.setOnClickListener(v -> {
             // 跳转到FavoriteMusicActivity
-            LocalMusicUtil.loadFavoriteToDetail(this);
-            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
-            intent.putExtra("pageTitle", "我的收藏");
-            startActivity(intent);
+            LocalMusicUtil.gotoFavorite(this);
+//            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
+//            intent.putExtra("pageTitle", "我的收藏");
+//            startActivity(intent);
         });
         frameLayout.setOnClickListener(v -> {
             // 跳转到PlayControlActivity
             Intent intent = new Intent(MainActivity.this, PlayControlActivity.class);
             startActivity(intent);
+        });
+        playControlEntranceButton.setOnClickListener(v -> {
+            // 跳转到PlayControlActivity
+            Intent intent = new Intent(MainActivity.this, PlayControlActivity.class);
+            startActivity(intent);
+        });
+        favoriteMusicComponent.setOnClickListener(v -> {
+            // 跳转到FavoriteMusicActivity
+            LocalMusicUtil.gotoFavorite(this);
+//            Intent intent = new Intent(MainActivity.this, LocalDetailActivity.class);
+//            intent.putExtra("pageTitle", "我的收藏");
+//            startActivity(intent);
+        });
+        listenNowButton.setOnClickListener(v -> {
+            // 跳转到PlayControlActivity
+            LocalMusicUtil.loadAndPlayFavorite(this);
         });
     }
 

@@ -3,6 +3,7 @@ package indi.kwanho.pm.activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import indi.kwanho.pm.R;
 import indi.kwanho.pm.fragment.general.PlayingBarFragment;
@@ -12,7 +13,7 @@ public class PlaylistAssistantActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_local_detail);
+        setContentView(R.layout.activity_playlist_assistant);
 
         getActualElements();
         setUpListeners();
@@ -20,10 +21,11 @@ public class PlaylistAssistantActivity extends AppCompatActivity {
     }
 
     private void getActualElements() {
-
+        // 获取其他元素
     }
 
     private void setUpListeners() {
+        // 设置监听器
     }
 
     private void wiredWidgets() {
@@ -32,9 +34,9 @@ public class PlaylistAssistantActivity extends AppCompatActivity {
         PlaylistFragment playlistFragment = new PlaylistFragment();
 
         // 将PlayingBarFragment添加到Fragment容器
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_playlist_container_main, playlistFragment)
-                .add(R.id.activity_playlist_container_play_bar, playingBarFragment)
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_playlist_container_main, playlistFragment);
+        transaction.replace(R.id.activity_playlist_container_play_bar, playingBarFragment);
+        transaction.commit();
     }
 }

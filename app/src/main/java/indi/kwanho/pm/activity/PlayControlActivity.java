@@ -2,10 +2,17 @@ package indi.kwanho.pm.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +24,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -51,6 +61,7 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
     private ImageButton playControlModeButton;
     private ImageButton playControlMoreButton;
     private ImageButton favoriteButton;
+    private ImageButton setAsRingtoneButton;
     private boolean isSeekBarTracking = false;
 
     @Override
@@ -64,6 +75,22 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
         initData();
         setUpListeners();
         updateSeekBarProgress();
+        getPermissions();
+    }
+
+    private void getPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.System.canWrite(this)) {
+                // 应用已经具有WRITE_SETTINGS权限
+                Log.d("PlayControlActivity", "应用已经具有WRITE_SETTINGS权限");
+            } else {
+                // 应用没有WRITE_SETTINGS权限
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        }
     }
 
     private void getActualElements() {
@@ -78,6 +105,7 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
         this.playControlModeButton = findViewById(R.id.play_control_play_mode_button);
         this.playControlMoreButton = findViewById(R.id.play_control_more_button);
         this.favoriteButton = findViewById(R.id.play_control_favorite_button);
+        this.setAsRingtoneButton = findViewById(R.id.set_as_ringtone_button);
     }
 
     private void initData() {
@@ -236,7 +264,68 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
                 return;
             handleAddToFavorite(playingSong);
         });
+        setAsRingtoneButton.setOnClickListener(v -> {
+            handleSetAsRingtone(PlayState.getInstance().getPlayingSong());
+        });
     }
+
+    private void handleSetAsRingtone(Song playingSong) {
+        getPermissions();
+        Log.d("PlayingBarFragment", "handleSetAsRingtone: " + playingSong.getFilePath());
+
+        File audioFile = new File(playingSong.getFilePath());
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.MediaColumns.RELATIVE_PATH, "Music/Ringtones");
+                values.put(MediaStore.MediaColumns.DISPLAY_NAME, playingSong.getTitle() + ".mp3");
+                values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mpeg");
+                values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+                values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+                values.put(MediaStore.Audio.Media.IS_ALARM, false);
+                values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+
+                ContentResolver resolver = getContentResolver();
+                Uri audioUri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+
+                if (audioUri != null) {
+                    OutputStream outputStream = resolver.openOutputStream(audioUri);
+                    if (outputStream != null) {
+                        FileInputStream inputStream = new FileInputStream(audioFile);
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+                        outputStream.close();
+                        inputStream.close();
+
+                        RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, audioUri);
+                        Toast.makeText(this, "铃声设置成功", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            } else {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.MediaColumns.DATA, audioFile.getAbsolutePath());
+                values.put(MediaStore.MediaColumns.TITLE, playingSong.getTitle());
+                values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mpeg");
+
+                Uri audioUri = MediaStore.Audio.Media.getContentUriForPath(audioFile.getAbsolutePath());
+                Uri newUri = getContentResolver().insert(audioUri, values);
+
+                RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, newUri);
+                Toast.makeText(this, "铃声设置成功", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(this, "铃声设置失败", Toast.LENGTH_SHORT).show();
+    }
+
 
     private void handleAddToFavorite(Song playingSong) {
         FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
@@ -388,4 +477,5 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
         // 用户停止拖动 SeekBar，设置标志位为 false
         isSeekBarTracking = false;
     }
+
 }

@@ -169,14 +169,14 @@
             android:layout_height="1dp" />
 
         <ImageButton
-            android:id="@+id/play_control_queue_button"
+            android:id="@+id/set_as_ringtone_button"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/queue" />
+            android:src="@drawable/ringtone_icon" />
 
         <Space
             android:layout_width="20dp"

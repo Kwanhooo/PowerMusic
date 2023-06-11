@@ -1,6 +1,7 @@
 package indi.kwanho.pm.activity;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import indi.kwanho.pm.service.MusicPlayerService;
 import indi.kwanho.pm.utils.LocalMusicUtil;
 
 public class MainActivity extends AppCompatActivity {
+    private static Context appContext;
     private ImageView localMusicEntranceButton;
     private ImageView favoriteMusicEntranceButton;
     private ImageView recentPlayEntranceButton;
@@ -78,7 +80,13 @@ public class MainActivity extends AppCompatActivity {
         getActualViews();
         wiredWidgets();
         setUpListeners();
+        // 在 onCreate 方法中为 appContext 赋值
+        appContext = this;
         // deleteDbContent();
+    }
+
+    public static Context getAppContext() {
+        return appContext;
     }
 
     private void deleteDbContent() {

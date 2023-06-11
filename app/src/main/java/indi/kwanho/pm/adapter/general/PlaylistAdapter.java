@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import indi.kwanho.pm.R;
+import indi.kwanho.pm.activity.MainActivity;
 import indi.kwanho.pm.persisitance.domain.PlaylistRecord;
 import indi.kwanho.pm.store.PlaylistState;
 import indi.kwanho.pm.utils.LocalMusicUtil;
@@ -36,7 +37,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         holder.bind(playlistItem);
         holder.itemView.setOnClickListener(v -> {
             // 跳入歌单详情页
-            LocalMusicUtil.gotoPlaylistDetail(v.getContext(), PlaylistState.getInstance().getPlaylistRecords().get(position));
+            LocalMusicUtil.gotoPlaylistDetail(MainActivity.getAppContext(), PlaylistState.getInstance().getPlaylistRecords().get(position));
         });
     }
 

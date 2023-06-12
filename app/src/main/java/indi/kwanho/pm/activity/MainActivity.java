@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,7 +41,11 @@ public class MainActivity extends AppCompatActivity {
     private Button listenNowButton;
     private FrameLayout frameLayout;
     private FrameLayout createPlaylistFragmentContainer;
+    private SearchView searchView;
     private MusicPlayerService musicPlayerService;
+    private ImageView searchEntranceButton;
+    private TextView favoriteMusicCountTextView;
+    private RelativeLayout mainActivityMainLayout;
     private boolean isServiceBound = false;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -80,9 +88,18 @@ public class MainActivity extends AppCompatActivity {
         getActualViews();
         wiredWidgets();
         setUpListeners();
+        initData();
+        LocalMusicUtil.scanLocalMusic(this);
         // 在 onCreate 方法中为 appContext 赋值
         appContext = this;
         // deleteDbContent();
+    }
+
+    private void initData() {
+        FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
+        favoriteRecordRepository.count().observe(this, integer -> {
+            favoriteMusicCountTextView.setText("共 " + integer + " 首");
+        });
     }
 
     public static Context getAppContext() {
@@ -111,6 +128,10 @@ public class MainActivity extends AppCompatActivity {
         playlistAssistantEntranceButton = findViewById(R.id.play_list_assistant_entrance_button);
         frameLayout = findViewById(R.id.fragment_container);
         createPlaylistFragmentContainer = findViewById(R.id.create_play_list_fragment_container);
+        searchView = findViewById(R.id.main_activity_search_view);
+        mainActivityMainLayout = findViewById(R.id.main_activity_main_layout);
+        searchEntranceButton = findViewById(R.id.search_entrance_button);
+        favoriteMusicCountTextView = findViewById(R.id.favorite_music_count_text_view);
     }
 
     private void wiredWidgets() {
@@ -174,6 +195,43 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, PlaylistAssistantActivity.class);
             startActivity(intent);
         });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // 当用户提交搜索时调用该方法
+                handleSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    // 搜索框为空时，显示主界面的所有元素
+                    showMainElements();
+                } else {
+                    // 搜索框不为空时，隐藏主界面的所有元素
+                    hideMainElements();
+                }
+                return true;
+            }
+        });
+        searchEntranceButton.setOnClickListener(v -> {
+            // 聚焦到搜索框
+            searchView.setIconified(false);
+//            this.hideMainElements();
+        });
+    }
+
+    private void hideMainElements() {
+        this.mainActivityMainLayout.setVisibility(View.GONE);
+    }
+
+    private void showMainElements() {
+        this.mainActivityMainLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void handleSearch(String query) {
+        LocalMusicUtil.searchAndGotoDetail(this, query);
     }
 
     @Override

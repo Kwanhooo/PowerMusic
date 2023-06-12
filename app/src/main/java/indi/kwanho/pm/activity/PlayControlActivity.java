@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import indi.kwanho.pm.R;
@@ -62,6 +64,9 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
     private ImageButton playControlMoreButton;
     private ImageButton favoriteButton;
     private ImageButton setAsRingtoneButton;
+    private TextView playControlCurrentTimeTextView;
+    private TextView playControlTotalTimeTextView;
+
     private boolean isSeekBarTracking = false;
 
     @Override
@@ -106,6 +111,8 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
         this.playControlMoreButton = findViewById(R.id.play_control_more_button);
         this.favoriteButton = findViewById(R.id.play_control_favorite_button);
         this.setAsRingtoneButton = findViewById(R.id.set_as_ringtone_button);
+        this.playControlCurrentTimeTextView = findViewById(R.id.play_control_current_time);
+        this.playControlTotalTimeTextView = findViewById(R.id.play_control_total_time);
     }
 
     private void initData() {
@@ -435,19 +442,38 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
     private void updateSeekBarProgress() {
         handler.postDelayed(() -> {
             if (!isSeekBarTracking) {
-                // 获取当前播放进度
-                int progress = MusicPlayerManager.getInstance()
+                MediaPlayer mediaPlayer = MusicPlayerManager.getInstance()
                         .getMusicPlayerService()
-                        .getMediaPlayer()
-                        .getCurrentPosition();
+                        .getMediaPlayer();
 
-                // 更新 SeekBar 的进度
-                seekBar.setProgress(progress);
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    // 获取当前播放进度和总时长
+                    int progress = mediaPlayer.getCurrentPosition();
+                    int duration = mediaPlayer.getDuration();
+
+                    // 更新 SeekBar 的进度
+                    seekBar.setProgress(progress);
+                    seekBar.setMax(duration);
+
+                    // 更新当前播放时长和总时长的 TextView
+                    String currentDurationStr = convertMillisecondsToTime(progress);
+                    String totalDurationStr = convertMillisecondsToTime(duration);
+                    playControlCurrentTimeTextView.setText(currentDurationStr);
+                    playControlTotalTimeTextView.setText(totalDurationStr);
+                }
             }
 
-            // 继续更新 SeekBar 的进度
+            // 继续更新 SeekBar 的进度和时长数据
             updateSeekBarProgress();
         }, 1000); // 每隔一秒更新一次
+    }
+
+    // 辅助方法：将毫秒转换为时间字符串（格式：mm:ss）
+    private String convertMillisecondsToTime(int milliseconds) {
+        int seconds = milliseconds / 1000;
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, remainingSeconds);
     }
 
     @Override

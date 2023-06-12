@@ -34,4 +34,8 @@ public interface FavoriteDao {
     // 清空
     @Query("DELETE FROM favorite_record")
     void deleteAllFavoriteRecords();
+
+    // 计数
+    @Query("SELECT COUNT(*) FROM favorite_record")
+    LiveData<Integer> count();
 }

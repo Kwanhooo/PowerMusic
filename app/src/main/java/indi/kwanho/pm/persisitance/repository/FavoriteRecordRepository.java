@@ -55,5 +55,9 @@ public class FavoriteRecordRepository {
     public LiveData<List<FavoriteRecord>> getFavoriteRecordsByFilePath(String filePath) {
         return favoriteDao.getFavoriteRecordsByFilePath(filePath);
     }
+
+    public LiveData<Integer> count() {
+        return favoriteDao.count();
+    }
 }
 

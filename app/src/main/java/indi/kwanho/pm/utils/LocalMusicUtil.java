@@ -165,7 +165,24 @@ public class LocalMusicUtil {
             intent.putExtra("pageTitle", playlistRecord.getTitle());
             context.startActivity(intent);
         });
+    }
 
+    public static void searchAndGotoDetail(Context context, String keyword) {
+        List<Song> songs = LocalMusicState.getInstance().getSongs();
+        List<Song> songsByKeyword = new ArrayList<>();
+        for (Song song : songs) {
+            System.out.println("keyword: " + keyword);
+            System.out.println("title: " + song.getTitle());
+            System.out.println("album: " + song.getAlbum());
+            System.out.println("artist: " + song.getArtist());
+            if (song.getTitle().contains(keyword) || song.getAlbum().contains(keyword) || song.getArtist().contains(keyword)) {
+                songsByKeyword.add(song);
+            }
+        }
+        LocalMusicState.getInstance().setDetails(songsByKeyword);
+        Intent intent = new Intent(context, LocalDetailActivity.class);
+        intent.putExtra("pageTitle", keyword);
+        context.startActivity(intent);
     }
 
     public static void loadAndPlayFavorite(Context context) {

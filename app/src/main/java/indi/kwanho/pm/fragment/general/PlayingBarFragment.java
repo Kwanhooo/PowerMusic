@@ -1,12 +1,16 @@
 package indi.kwanho.pm.fragment.general;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +24,7 @@ public class PlayingBarFragment extends Fragment implements PowerObserver {
     private ImageButton playPauseButton;
     private TextView titleTextView;
     private TextView artistTextView;
+    private ImageView songImage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,12 +51,14 @@ public class PlayingBarFragment extends Fragment implements PowerObserver {
         } else {
             playPauseButton.setImageResource(R.drawable.pause_button);
         }
+        updateSongImage();
     }
 
     private void getActualElements(View view) {
         playPauseButton = view.findViewById(R.id.play_pause_button);
         titleTextView = view.findViewById(R.id.playing_bar_song_name);
         artistTextView = view.findViewById(R.id.playing_bar_artist_name);
+        songImage = view.findViewById(R.id.playing_bar_song_image);
     }
 
     private void setUpListeners() {
@@ -95,5 +102,32 @@ public class PlayingBarFragment extends Fragment implements PowerObserver {
         } else {
             playPauseButton.setImageResource(R.drawable.pause_button);
         }
+        updateSongImage();
+    }
+
+    private void updateSongImage() {
+        if (PlayState.getInstance().getPlayingSong() == null) {
+            // 使用默认图片
+            this.songImage.setImageResource(R.drawable.album_image);
+            return;
+        }
+        String musicFilePath = PlayState.getInstance().getPlayingSong().getFilePath();
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(musicFilePath);
+
+        byte[] albumArtBytes = retriever.getEmbeddedPicture();
+        Bitmap albumArt;
+
+        if (albumArtBytes != null && albumArtBytes.length > 0) {
+            Log.d("albumArtBytes", "使用专辑图片");
+            albumArt = BitmapFactory.decodeByteArray(albumArtBytes, 0, albumArtBytes.length);
+            this.songImage.setImageBitmap(albumArt);
+        } else {
+            Log.d("albumArtBytes", "使用默认图片");
+            this.songImage.setImageResource(R.drawable.album_image);
+        }
+
+        Log.d("musicPath", "updateSongImage: " + musicFilePath);
     }
 }

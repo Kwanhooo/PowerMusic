@@ -4,8 +4,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -19,18 +23,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import indi.kwanho.pm.R;
+import indi.kwanho.pm.common.PowerObserver;
 import indi.kwanho.pm.fragment.general.CreatePlaylistFragment;
 import indi.kwanho.pm.fragment.general.PlayingBarFragment;
 import indi.kwanho.pm.fragment.general.PlaylistFragment;
 import indi.kwanho.pm.manager.MusicPlayerManager;
+import indi.kwanho.pm.persisitance.domain.FavoriteRecord;
 import indi.kwanho.pm.persisitance.repository.FavoriteRecordRepository;
 import indi.kwanho.pm.persisitance.repository.PlayRecordRepository;
 import indi.kwanho.pm.persisitance.repository.PlaylistItemRecordRepository;
 import indi.kwanho.pm.persisitance.repository.PlaylistRecordRepository;
 import indi.kwanho.pm.service.MusicPlayerService;
+import indi.kwanho.pm.store.PlaylistState;
 import indi.kwanho.pm.utils.LocalMusicUtil;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PowerObserver {
     private static Context appContext;
     private ImageView localMusicEntranceButton;
     private ImageView favoriteMusicEntranceButton;
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private SearchView searchView;
     private MusicPlayerService musicPlayerService;
     private ImageView searchEntranceButton;
+    private ImageView favoriteMusicCoverImageView;
     private TextView favoriteMusicCountTextView;
     private RelativeLayout mainActivityMainLayout;
     private boolean isServiceBound = false;
@@ -84,21 +92,49 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        register();
         getActualViews();
         wiredWidgets();
         setUpListeners();
-        initData();
+        updateFavoriteCount();
+        updateFavoriteCoverImage();
         LocalMusicUtil.scanLocalMusic(this);
         // 在 onCreate 方法中为 appContext 赋值
         appContext = this;
         // deleteDbContent();
     }
 
-    private void initData() {
+    public void updateFavoriteCount() {
         FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
         favoriteRecordRepository.count().observe(this, integer -> {
             favoriteMusicCountTextView.setText("共 " + integer + " 首");
+        });
+    }
+
+    public void updateFavoriteCoverImage() {
+        FavoriteRecordRepository favoriteRecordRepository = new FavoriteRecordRepository(this);
+        favoriteRecordRepository.getAllFavoriteRecords().observe(this, favoriteRecords -> {
+            if (favoriteRecords.size() > 0) {
+                FavoriteRecord record = favoriteRecords.get(0);
+                String musicFilePath = record.getFilePath();
+
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(musicFilePath);
+
+                byte[] albumArtBytes = retriever.getEmbeddedPicture();
+                Bitmap albumArt;
+
+                if (albumArtBytes != null && albumArtBytes.length > 0) {
+                    Log.d("albumArtBytes", "使用专辑图片");
+                    albumArt = BitmapFactory.decodeByteArray(albumArtBytes, 0, albumArtBytes.length);
+                } else {
+                    Log.d("albumArtBytes", "使用默认图片");
+                    albumArt = BitmapFactory.decodeResource(getResources(), R.drawable.album_image);
+                }
+
+                Log.d("musicPath", "updateSongImage: " + musicFilePath);
+                this.favoriteMusicCoverImageView.setImageBitmap(albumArt);
+            }
         });
     }
 
@@ -132,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         mainActivityMainLayout = findViewById(R.id.main_activity_main_layout);
         searchEntranceButton = findViewById(R.id.search_entrance_button);
         favoriteMusicCountTextView = findViewById(R.id.favorite_music_count_text_view);
+        favoriteMusicCoverImageView = findViewById(R.id.favorite_music_cover_image_view);
     }
 
     private void wiredWidgets() {
@@ -242,5 +279,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void register() {
+        PlaylistState.getInstance().attach(this);
+    }
+
+    @Override
+    public void update() {
+        this.updateFavoriteCount();
+        this.updateFavoriteCoverImage();
     }
 }

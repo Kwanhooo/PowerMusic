@@ -22,7 +22,7 @@ public interface FavoriteDao {
     @Update
     void update(FavoriteRecord playRecord);
 
-    @Query("SELECT * FROM favorite_record ORDER BY id ASC")
+    @Query("SELECT * FROM favorite_record ORDER BY id DESC")
     LiveData<List<FavoriteRecord>> getAllFavoriteRecords();
 
     @Query("SELECT * FROM favorite_record WHERE id = :id")

@@ -6,6 +6,9 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -18,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,6 +120,7 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
     }
 
     private void initData() {
+        updateSongImage();
         seekBar.setMax(MusicPlayerManager.getInstance()
                 .getMusicPlayerService()
                 .getMediaPlayer()
@@ -358,6 +363,7 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
                 favoriteRecordRepository.insertFavoriteRecord(favoriteRecord);
 
                 Toast.makeText(PlayControlActivity.this, "已添加到收藏列表", Toast.LENGTH_SHORT).show();
+                PlaylistState.getInstance().notifyObservers();
             } else {
                 Toast.makeText(PlayControlActivity.this, "歌曲已存在于收藏列表中", Toast.LENGTH_SHORT).show();
             }
@@ -437,6 +443,35 @@ public class PlayControlActivity extends AppCompatActivity implements PowerObser
         } else {
             playPauseButton.setImageResource(R.drawable.pause_btn_white);
         }
+        updateSongImage();
+    }
+
+    private void updateSongImage() {
+        if (PlayState.getInstance().getPlayingSong() == null) {
+            // 使用默认图片
+            ImageView imageView = findViewById(R.id.play_control_song_image);
+            imageView.setImageResource(R.drawable.album_image);
+            return;
+        }
+        String musicFilePath = PlayState.getInstance().getPlayingSong().getFilePath();
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(musicFilePath);
+
+        byte[] albumArtBytes = retriever.getEmbeddedPicture();
+        Bitmap albumArt;
+
+        if (albumArtBytes != null && albumArtBytes.length > 0) {
+            Log.d("albumArtBytes", "使用专辑图片");
+            albumArt = BitmapFactory.decodeByteArray(albumArtBytes, 0, albumArtBytes.length);
+        } else {
+            Log.d("albumArtBytes", "使用默认图片");
+            albumArt = BitmapFactory.decodeResource(getResources(), R.drawable.album_image);
+        }
+
+        Log.d("musicPath", "updateSongImage: " + musicFilePath);
+        ImageView imageView = findViewById(R.id.play_control_song_image);
+        imageView.setImageBitmap(albumArt);
     }
 
     private void updateSeekBarProgress() {

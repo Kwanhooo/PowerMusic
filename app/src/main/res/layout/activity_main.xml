@@ -316,6 +316,7 @@
 
                                 <!-- 左侧图片 -->
                                 <ImageView
+                                    android:id="@+id/favorite_music_cover_image_view"
                                     android:layout_width="60dp"
                                     android:layout_height="60dp"
                                     android:layout_marginRight="15dp"
